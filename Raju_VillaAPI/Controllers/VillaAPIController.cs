@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Raju_VillaAPI.Data;
 using Raju_VillaAPI.Models;
@@ -46,6 +47,15 @@ namespace Raju_VillaAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public ActionResult<VillaDTO> CreateVilla([FromBody] VillaDTO villaDTO)
         {
+            //if(!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
+            if(VillaStore.villaList.FirstOrDefault(u=>u.Name == villaDTO.Name) == null)
+            {
+                ModelState.AddModelError("Custom", "this is error message");
+                    return BadRequest(ModelState); 
+            }
             if(villaDTO == null)
             {
                 return BadRequest();
@@ -58,6 +68,60 @@ namespace Raju_VillaAPI.Controllers
             VillaStore.villaList.Add(villaDTO);
             return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO);
             
+        }
+        [HttpDelete("{id:int}",Name ="DeleteVilla")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public IActionResult DeleteVilla(int id)
+        {
+            if (id == 0)
+            {
+                return BadRequest();
+            }
+            var villa=VillaStore.villaList.FirstOrDefault(u=>u.Id == id);
+            if(villa == null)
+            {
+                return NotFound();
+            }
+            VillaStore.villaList.Remove(villa);
+            return NoContent();
+        }
+        [HttpPut("{id:int}",Name ="Update")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+
+        public IActionResult UpdateVilla(int id, [FromBody] VillaDTO villaDTO)
+        {
+            if(id == 0 && id==villaDTO.Id)
+            {
+                return BadRequest();
+            }
+            var villa=VillaStore.villaList.FirstOrDefault(villaDTO=>villaDTO.Id == id); 
+            villa.Name= villaDTO.Name;
+            villa.Sq = villaDTO.Sq;
+            villa.Occupancy = villaDTO.Occupancy;
+            return NoContent();
+        }
+        public IActionResult UpdatePartialVilla(int id,JsonPatchDocument<VillaDTO> patchDTO
+        {
+            if(patchDTO==null || id==0)
+            {
+                return BadRequest();
+            }
+            var villa=VillaStore.villaList.FirstOrDefault(u=>u.Id==id);
+            if (villa == null)
+            {
+                return BadRequest();
+            }
+            patchDTO.ApplyTo(villa, ModelState);
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            return NoContent();
         }
       
     }
