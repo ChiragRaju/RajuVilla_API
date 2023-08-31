@@ -105,7 +105,7 @@ namespace Raju_VillaAPI.Controllers
             villa.Occupancy = villaDTO.Occupancy;
             return NoContent();
         }
-        public IActionResult UpdatePartialVilla(int id,JsonPatchDocument<VillaDTO> patchDTO
+        public IActionResult UpdatePartialVilla(int id,JsonPatchDocument<VillaDTO> patchDTO)
         {
             if(patchDTO==null || id==0)
             {
