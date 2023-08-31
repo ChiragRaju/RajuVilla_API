@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Raju_VillaAPI.Data;
 using Raju_VillaAPI.Models;
 using Raju_VillaAPI.Models.DTO;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Raju_VillaAPI.Controllers
 {
@@ -17,7 +19,7 @@ namespace Raju_VillaAPI.Controllers
             return Ok (VillaStore.villaList);
         }
         //[HttpGet("id")]
-        [HttpGet("{id:int}")]
+        [HttpGet("{id:int}",Name ="GetVilla")]
         [ProducesResponseType(StatusCodes.Status200OK)]
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -38,7 +40,7 @@ namespace Raju_VillaAPI.Controllers
             return Ok(villa);
         }
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status201Created)]
 
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,7 +56,9 @@ namespace Raju_VillaAPI.Controllers
             }
             villaDTO.Id = VillaStore.villaList.OrderByDescending(u=>u.Id).FirstOrDefault().Id+1;
             VillaStore.villaList.Add(villaDTO);
-            return Ok(villaDTO);
+            return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO);
+            
         }
+      
     }
 }
