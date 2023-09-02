@@ -8,6 +8,7 @@ namespace Raju_VillaAPI.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { 
         }
         public DbSet<Villas> villass {  get; set; }
+        public DbSet<LocalUser> LocalUsers { get; set; } 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Villas>().HasData(
