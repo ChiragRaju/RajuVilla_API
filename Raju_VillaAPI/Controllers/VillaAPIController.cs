@@ -139,11 +139,7 @@ namespace Raju_VillaAPI.Controllers
             {
                 return BadRequest();
             }
-            //Villas model = new()
-            //{
-            //    Amenity = updateDTO.Amenity,
-            //    Details = updateDTO.Details,
-            //    Id = updateDTO.Id,
+           
             //    ImageUrl = updateDTO.ImageUrl,
             //    Name = updateDTO.Name,
             //    Occupancy = updateDTO.Occupancy,
